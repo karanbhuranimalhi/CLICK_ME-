@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Holi Celebration 2024! | Karan's Festive Hub</title>
+    <meta name="description" content="Experience the ultimate digital Holi celebration with interactive colors, live GIFs, and festive games!">
+    <!-- External Resources -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Lobster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4757;
+            --secondary-color: #2ed573;
+            --accent-color: #ffa502;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d, #2ed573);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .particles-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .holi-title {
+            font-family: 'Lobster', cursive;
+            font-size: 5rem;
+            color: white;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+            mix-blend-mode: overlay;
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: rgba(255,255,255,0.9);
+            margin: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .holi-gif {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .holi-gif:hover {
+            transform: scale(1.05) rotate(3deg);
+        }
+
+        .color-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        /* Advanced Animations */
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .color-picker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: transform 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+
+        /* Dynamic Content Styles */
+        .live-feed {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .holi-title { font-size: 3rem; }
+            .gallery-container { margin: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="color-canvas"></canvas>
+    
+    <div class="particles-container" id="particles"></div>
+
+    <section class="hero-section">
+        <h1 class="holi-title animate__animated animate__bounceIn">Holi Festival 2024</h1>
+    </section>
+
+    <div class="live-feed">
+        <h3>Live Holi Celebration Feed 🎨</h3>
+        <div id="giphy-feed"></div>
+    </div>
+
+    <div class="gallery-container">
+        <!-- Dynamic GIFs from GIPHY API -->
+        <img src="https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif" class="holi-gif">
+        <img src="https://media.giphy.com/media/3o7TKMt1VVNkHV2PaE/giphy.gif" class="holi-gif">
+        <img src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" class="holi-gif">
+        <!-- Add more GIF URLs -->
+    </div>
+
+    <div class="color-picker">
+        <div class="color-option" style="background: #ff4757" onclick="changeColorTheme('#ff4757')"></div>
+        <div class="color-option" style="background: #2ed573" onclick="changeColorTheme('#2ed573')"></div>
+        <div class="color-option" style="background: #ffa502" onclick="changeColorTheme('#ffa502')"></div>
+    </div>
+
+    <!-- Social Sharing -->
+    <div class="social-share">
+        <button onclick="shareOnWhatsApp()">Share via WhatsApp</button>
+        <button onclick="shareOnInstagram()">Share to Instagram</button>
+    </div>
+
+<script>
+// Complex Color Particle System
+class ColorParticle {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.particles = [];
+        this.init();
+    }
+
+    init() {
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.animate();
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    addParticles(x, y) {
+        for(let i = 0; i < 50; i++) {
+            this.particles.push({
+                x,
+                y,
+                size: Math.random() * 5 + 2,
+                color: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                velocity: {
+                    x: (Math.random() - 0.5) * 10,
+                    y: (Math.random() - 0.5) * 10
+                }
+            });
+        }
+    }
+
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.particles.forEach((particle, index) => {
+            particle.x += particle.velocity.x;
+            particle.y += particle.velocity.y;
+            particle.size *= 0.95;
+
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fillStyle = particle.color;
+            this.ctx.fill();
+
+            if(particle.size < 0.5) this.particles.splice(index, 1);
+        });
+
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+// Initialize Particle System
+const canvas = document.querySelector('.color-canvas');
+const particleSystem = new ColorParticle(canvas);
+
+// Interactive Color Throw
+document.addEventListener('click', (e) => {
+    particleSystem.addParticles(e.clientX, e.clientY);
+});
+
+// Dynamic GIPHY Integration
+async function loadGiphyFeed() {
+    const apiKey = 'YOUR_GIPHY_API_KEY';
+    const response = await fetch(
+        `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=holi&limit=10`
+    );
+    const data = await response.json();
+    
+    const container = document.getElementById('giphy-feed');
+    data.data.forEach(gif => {
+        const img = document.createElement('img');
+        img.src = gif.images.fixed_height.url;
+        img.className = 'holi-gif';
+        container.appendChild(img);
+    });
+}
+loadGiphyFeed();
+
+// Theme Customization
+function changeColorTheme(color) {
+    document.documentElement.style.setProperty('--primary-color', color);
+}
+
+// Social Sharing
+function shareOnWhatsApp() {
+    const url = `https://api.whatsapp.com/send?text=Check%20out%20this%20awesome%20Holi%20site%20${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareOnInstagram() {
+    // Implement Instagram sharing logic
+}
+
+// Add touch support for mobile
+document.addEventListener('touchstart', (e) => {
+    particleSystem.addParticles(e.touches[0].clientX, e.touches[0].clientY);
+});
+</script>
+
+<!-- External Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</body>
+</html>
